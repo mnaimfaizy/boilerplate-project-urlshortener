@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const validUrl = require('valid-url');
 const app = express();
 
 // app.use(bodyParser.json());
@@ -30,6 +31,10 @@ function generateShortUrl() {
 // Route to handle shortening URLs
 app.post('/api/shorturl', (req, res) => {
   const originalUrl = req.body.url;
+
+  if (!validUrl.isWebUri(originalUrl)) {
+    return res.json({ error: 'Invalid URL' });
+  }
 
   const shortUrl = generateShortUrl();
   urlMap[shortUrl] = originalUrl;
